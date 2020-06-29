@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+class trienode{
+trienode* left;
+trienode* right;
+};
+void insert(trienode* head,int n){
+    trienode* curr=head;
+    for(int i=31;i>=0;i--){
+        int bit=(n>>i)&1;
+        if(bit==0){
+            if(curr->left==NULL){
+                curr->left=new trienode();
+            }
+            curr=curr->left;
+        }
+        else{
+            if(curr->right==NULL){
+                curr->right=new trienode();
+            }
+            curr=curr->right;
+        }
+    }
+}
+
+int maxzorfind(int* arr,trienode* head,int el){
+    trienode* curr=head;
+    int max_zor=INT_MIN;
+    int curr_zor=0;
+    for(int i=31;i>=0;i--){
+        int bit=(el>>i)&1;
+        if(bit==0){
+            if(curr->right!=NULL){
+                curr=curr->right;
+                curr_zor+=(int)(pow(2,i));
+            }
+            else{curr=curr->left;}
+        else{
+            if(curr->left!=NULL){
+                curr=curr->left;
+                curr_zor+=(int)(pow(2,i));
+            }
+            else{curr=curr->right;}
+        }
+        }
+    }
+    if(curr_zor>max_zor){max_zor=curr_zor;}
+    return max_zor;
+}
+int main(){
+    int n;
+    cin>>n;
+    int arr[n];
+    for(int i=0;i<n;i++)cin>>arr[i];
+    trienode* head=new trienode();
+    int final_ans=0;
+    for(int i=0;i<n;i++){
+        insert(head,arr[i]);
+        final_ans=max(final_ans,maxzorfind(arr,head,arr[i]));
+    }
+    cout<<final_ans<<endl;
+
+    return 0;
+}
